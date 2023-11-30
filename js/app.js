@@ -1,11 +1,8 @@
 // Header Elements
+const profileImg = document.querySelector("#profileImg");
 const logo = document.querySelector("#logo");
 const frontNameCont = document.querySelector("#frontNameSocials");
 const backNameCont = document.querySelector("#backNameSocials");
-
-window.addEventListener("load", () => {
-  addSpinAnim(logo, "right");
-});
 
 // Card Elements
 const container = document.querySelector("#container");
@@ -19,20 +16,36 @@ let isFrontVisible = true;
 
 // Flip the card
 turnBtn.addEventListener("click", () => {
+  const windowWidth = window.innerWidth;
+
   if (isFrontVisible) {
     fadeInOutHeader(frontNameCont, backNameCont);
-    setTimeout(() => {
-      addSpinAnim(logo, "right");
-    }, 500);
+    if (windowWidth > 1023) {
+      setTimeout(() => {
+        addMoveAnim(profileImg, "Right");
+        addMoveAnim(logo, "Right");
+      }, 500);
+    } else {
+      setTimeout(() => {
+        addSpinAnim(logo, "Right");
+      }, 500);
+    }
   } else {
     fadeInOutHeader(backNameCont, frontNameCont);
-    setTimeout(() => {
-      addSpinAnim(logo, "left");
-    }, 500);
+    if (windowWidth > 1023) {
+      setTimeout(() => {
+        addMoveAnim(profileImg, "Left");
+        addMoveAnim(logo, "Left");
+      }, 500);
+    } else {
+      setTimeout(() => {
+        addSpinAnim(logo, "Left");
+      }, 500);
+    }
   }
   switchAriaHiddens();
   toggleClass(container.firstElementChild, "flip");
-  addSpinAnim(turnSVG);
+  addSpinAnim(turnSVG, "Right");
 });
 
 function switchAriaHiddens() {
@@ -64,15 +77,27 @@ function fadeInOutHeader(fromEl, toEl) {
 }
 
 function addSpinAnim(el, direction) {
-  if (direction === "right") {
-    el.style.animation = "spinRight 1s ease-in-out";
-    setTimeout(() => {
-      el.style.animation = null;
-    }, 1100);
-  } else {
-    el.style.animation = "spinLeft 1s ease-in-out";
-    setTimeout(() => {
-      el.style.animation = null;
-    }, 1100);
-  }
+  el.style.animation = `spin${direction} 1s ease-in-out`;
+  setTimeout(() => {
+    el.style.animation = null;
+  }, 1000);
+}
+
+function addMoveAnim(el, direction) {
+  let elID;
+  el.id === "logo" ? (elID = "Logo") : (elID = "Img");
+  el.style.animation = `move${elID}To${direction} 1s ease-in-out`;
+  console.log(el);
+  console.log(el.style.animation);
+
+  setTimeout(() => {
+    el.style.animation = null;
+    if (elID === "Logo") {
+      direction === "Right"
+        ? (el.style.left = "390px")
+        : (el.style.left = "100%");
+    } else {
+      direction === "Right" ? (el.style.left = "275px") : (el.style.left = "0");
+    }
+  }, 1000);
 }
