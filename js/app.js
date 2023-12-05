@@ -1,4 +1,8 @@
+let windowWidth = window.innerWidth;
+
 // Header Elements
+const header = document.querySelector("header");
+let headerWidth = header.offsetWidth;
 const profileImg = document.querySelector("#profileImg");
 const logo = document.querySelector("#logo");
 const frontNameCont = document.querySelector("#frontNameSocials");
@@ -15,29 +19,33 @@ const turnSVG = document.querySelector("#turnBtnSVG");
 let isFrontVisible = true;
 
 // Flip the card
-turnBtn.addEventListener("click", () => {
-  const windowWidth = window.innerWidth;
+turnBtn.addEventListener("click", async () => {
+  windowWidth = window.innerWidth;
 
+  // if flipping to the back
   if (isFrontVisible) {
     fadeInOutHeader(frontNameCont, backNameCont);
+    // if in desktop view
     if (windowWidth > 1023) {
       setTimeout(() => {
-        addMoveAnim(profileImg, "Right");
-        addMoveAnim(logo, "Right");
+        rollImgs(true);
       }, 500);
     } else {
+      // if in mobile / tablet view
       setTimeout(() => {
         addSpinAnim(logo, "Right");
       }, 500);
     }
   } else {
+    // if flipping to the front
     fadeInOutHeader(backNameCont, frontNameCont);
+    // if in desktop view
     if (windowWidth > 1023) {
       setTimeout(() => {
-        addMoveAnim(profileImg, "Left");
-        addMoveAnim(logo, "Left");
+        rollImgs(false);
       }, 500);
     } else {
+      // if in mobile / tablet view
       setTimeout(() => {
         addSpinAnim(logo, "Left");
       }, 500);
@@ -47,6 +55,18 @@ turnBtn.addEventListener("click", () => {
   toggleClass(container.firstElementChild, "flip");
   addSpinAnim(turnSVG, "Right");
 });
+
+function rollImgs(bool) {
+  if (bool) {
+    moveImgAnim.playbackRate = 1;
+    moveLogoAnim.playbackRate = 1;
+  } else {
+    moveImgAnim.playbackRate = -1;
+    moveLogoAnim.playbackRate = -1;
+  }
+  moveImgAnim.play();
+  moveLogoAnim.play();
+}
 
 function switchAriaHiddens() {
   isFrontVisible = cardFront.getAttribute("aria-hidden") === "true";
@@ -83,21 +103,66 @@ function addSpinAnim(el, direction) {
   }, 1000);
 }
 
-function addMoveAnim(el, direction) {
-  let elID;
-  el.id === "logo" ? (elID = "Logo") : (elID = "Img");
-  el.style.animation = `move${elID}To${direction} 1s ease-in-out`;
-  console.log(el);
-  console.log(el.style.animation);
+// move logo back if going from large to small after animation
+window.addEventListener("resize", () => {
+  console.log(isFrontVisible);
+  windowWidth = window.innerWidth;
+  headerWidth = header.offsetWidth;
+  resetImgPos();
+  setImgKeys();
+  setLogoKeys();
+});
 
-  setTimeout(() => {
-    el.style.animation = null;
-    if (elID === "Logo") {
-      direction === "Right"
-        ? (el.style.left = "390px")
-        : (el.style.left = "100%");
+function resetImgPos() {
+  if (windowWidth < 1024) {
+    logo.style.left = "75%";
+  } else {
+    if (isFrontVisible) {
+      logo.style.left = "120px";
+      profileImg.style.left = 0;
     } else {
-      direction === "Right" ? (el.style.left = "275px") : (el.style.left = "0");
+      logo.style.left = `${headerWidth / 2 - 130}px`;
+      profileImg.style.left = `${headerWidth / 2 - 250}px`;
     }
-  }, 1000);
+  }
 }
+
+// ANIMATIONS
+let moveImgKeys;
+let moveLogoKeys;
+let moveImgAnim;
+let moveLogoAnim;
+
+// move / roll profile image
+function setImgKeys() {
+  let fillSet;
+  isFrontVisible ? (fillSet = "forwards") : (fillSet = "backwards");
+  moveImgKeys = new KeyframeEffect(
+    profileImg,
+    [
+      { left: 0 },
+      { left: `${headerWidth / 2 - 250}px`, transform: "rotate(360deg)" },
+    ],
+    { duration: 1000, fill: fillSet, easing: "ease-in-out" }
+  );
+  moveImgAnim = new Animation(moveImgKeys, document.timeline);
+}
+
+// move / roll logo
+function setLogoKeys() {
+  let fillSet;
+  isFrontVisible ? (fillSet = "forwards") : (fillSet = "backwards");
+  moveLogoKeys = new KeyframeEffect(
+    logo,
+    [
+      { left: "120px" },
+      { left: `${headerWidth / 2 - 130}px`, transform: "rotate(360deg)" },
+    ],
+    { duration: 1000, fill: fillSet, easing: "ease-in-out" }
+  );
+  moveLogoAnim = new Animation(moveLogoKeys, document.timeline);
+}
+
+// initialize animations
+setImgKeys();
+setLogoKeys();

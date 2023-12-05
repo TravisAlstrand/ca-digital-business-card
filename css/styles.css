@@ -331,12 +331,11 @@ h2 {
     position: absolute;
     left: 0;
     width: 150px;
-    animation-fill-mode: forwards;
   }
 
   .logo {
     width: 40px;
-    left: 100%;
+    left: 120px;
   }
 
   .name-socials {
@@ -466,33 +465,5 @@ h2 {
 @keyframes fadeOut {
   100% {
     opacity: 0;
-  }
-}
-
-@keyframes moveImgToRight {
-  100% {
-    left: 275px;
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes moveImgToLeft {
-  100% {
-    left: 0;
-    transform: rotate(-360deg);
-  }
-}
-
-@keyframes moveLogoToRight {
-  100% {
-    left: 390px;
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes moveLogoToLeft {
-  100% {
-    left: 100%;
-    transform: rotate(-360deg);
   }
 }
