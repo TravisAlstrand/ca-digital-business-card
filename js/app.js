@@ -74,7 +74,7 @@ function switchAriaHiddens() {
   cardFront.setAttribute("aria-hidden", !isFrontVisible);
   frontNameCont.setAttribute("aria-hidden", !isFrontVisible);
   cardBack.setAttribute("aria-hidden", isFrontVisible);
-  backNameCont.setAttribute("aria-hidden", !isFrontVisible);
+  backNameCont.setAttribute("aria-hidden", isFrontVisible);
 }
 
 function toggleClass(el, cssClass) {
@@ -105,7 +105,6 @@ function addSpinAnim(el, direction) {
 
 // move logo back if going from large to small after animation
 window.addEventListener("resize", () => {
-  console.log(isFrontVisible);
   windowWidth = window.innerWidth;
   headerWidth = header.offsetWidth;
   resetImgPos();
@@ -115,7 +114,7 @@ window.addEventListener("resize", () => {
 
 function resetImgPos() {
   if (windowWidth < 1024) {
-    logo.style.left = "75%";
+    logo.style.left = "75px";
   } else {
     if (isFrontVisible) {
       logo.style.left = "120px";
@@ -123,6 +122,7 @@ function resetImgPos() {
     } else {
       logo.style.left = `${headerWidth / 2 - 130}px`;
       profileImg.style.left = `${headerWidth / 2 - 250}px`;
+      console.log(logo.style.left);
     }
   }
 }
